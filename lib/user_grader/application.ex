@@ -15,15 +15,19 @@ defmodule UserGrader.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: UserGrader.PubSub},
       # Start the Endpoint (http/https)
-      UserGraderWeb.Endpoint
+      UserGraderWeb.Endpoint,
       # Start a worker by calling: UserGrader.Worker.start_link(arg)
       # {UserGrader.Worker, arg}
+
+      {Task.Supervisor, name: UserGrader.TaskSupervisor}
     ]
+
+    all_chidren = children ++ env_based_children(Mix.env())
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: UserGrader.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(all_chidren, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -33,4 +37,8 @@ defmodule UserGrader.Application do
     UserGraderWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  defp env_based_children(:test), do: []
+
+  defp env_based_children(_env), do: [UserGrader.GraderServer]
 end

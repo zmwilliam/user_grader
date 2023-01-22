@@ -20,6 +20,8 @@ config :user_grader, UserGraderWeb.Endpoint,
   secret_key_base: "AjWRjOX7m1tjZLL+XC/IV5twqnWI3BTXRtTgIYoccrDGguuJRgao4ieuVGrW/mD0",
   server: false
 
+config :user_grader, :grader_server, periodic_update_enabled: false
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

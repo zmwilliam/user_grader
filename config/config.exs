@@ -25,6 +25,12 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :user_grader, :grader_server,
+  periodic_update_enabled: true,
+  periodic_update_interval_ms: 60_000,
+  minimum_points: 0,
+  maximum_points: 100
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
