@@ -18,6 +18,10 @@ defmodule UserGrader.GraderServer do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def get_users_with_minimum_points(limit) do
+    GenServer.call(__MODULE__, {:get_users_with_minimum_points, limit})
+  end
+
   def init(_args) do
     initial_state = %__MODULE__{
       min_number: get_random(),
@@ -29,6 +33,21 @@ defmodule UserGrader.GraderServer do
     end
 
     {:ok, initial_state}
+  end
+
+  def handle_call({:get_users_with_minimum_points, limit}, _from, state) do
+    %{min_number: min_number, timestamp: timestamp} = state
+
+    users_found = Users.list_users(min_number, limit)
+
+    updated_state = %__MODULE__{state | timestamp: NaiveDateTime.utc_now()}
+
+    reply = %{
+      users: users_found,
+      previous_timestamp: timestamp
+    }
+
+    {:reply, reply, updated_state}
   end
 
   def handle_info(:perform_update_users_points, %{task_ref: ref} = state)
