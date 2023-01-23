@@ -5,7 +5,9 @@ defmodule UserGraderWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", UserGraderWeb do
+  scope "/", UserGraderWeb do
     pipe_through :api
+
+    get "/", UsersPointsController, :get
   end
 end
